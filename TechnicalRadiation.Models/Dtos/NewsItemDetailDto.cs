@@ -1,4 +1,5 @@
 using System;
+using TechnicalRadiation.Models.HyperMedia;
 
 namespace TechnicalRadiation.Models.Dtos
 {

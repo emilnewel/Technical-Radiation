@@ -28,9 +28,13 @@ namespace TechnicalRadiation.Repositories
             });
         }
 
+        // public IEnumerable<NewsItemDto> GetNewsByAuthorId(int authorId)
+        // {
+        //    Mátt endilega bomba í þettaa fall :p
+        //     
+        // }
+
 
     }
 
 }
-
-//GetNewsById

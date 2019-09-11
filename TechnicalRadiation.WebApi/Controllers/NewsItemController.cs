@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using TechnicalRadiation.Models;
 using TechnicalRadiation.Models.Dtos;
+using TechnicalRadiation.Models.HyperMedia;
 using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Services;
 
@@ -14,6 +14,7 @@ namespace TechnicalRadiation.WebApi.Controllers
     public class NewsItemController : ControllerBase
     {
         private NewsService _newsService = new NewsService();
+
 
         //GET http://localhost:5000/api/
         [Route("")]

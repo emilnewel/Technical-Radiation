@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TechnicalRadiation.Models
+namespace TechnicalRadiation.Models.HyperMedia
 {
     public class Envelope<T> where T : class
     {

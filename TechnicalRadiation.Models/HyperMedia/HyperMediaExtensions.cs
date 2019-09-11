@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace TechnicalRadiation.Models.Extensions
+namespace TechnicalRadiation.Models.HyperMedia
 {
     public static class HyperMediaExtensions 
     {
