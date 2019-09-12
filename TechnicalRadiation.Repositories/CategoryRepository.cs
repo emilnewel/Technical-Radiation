@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Repositories.Data;
-using TechnicalRadiation.Models.Entities;
 using System.Linq;
 
 namespace TechnicalRadiation.Repositories
 {
     public class CategoryRepository
-    {        
+    {
+        private NewsRepository _newsRepository = new NewsRepository();
         public IEnumerable<CategoryDto> GetCategories()
         {
             return DataProvider.Categories.Select(c => new CategoryDto
@@ -17,14 +17,32 @@ namespace TechnicalRadiation.Repositories
                 Slug = c.Slug
             });
         }
-        public IEnumerable<CategoryDto> GetCategoriesById(int Id)
+        public IEnumerable<CategoryDetailDto> GetCategoriesById(int Id)
         {
-            return DataProvider.Categories.Where(c => c.Id == Id).Select(c => new CategoryDto
+            //int numberofNewsItems = _newsRepository.G
+            return DataProvider.Categories.Where(c => c.Id == Id).Select(c => new CategoryDetailDto
             {
                 Id = c.Id,
                 Name = c.Name,
-                Slug = c.Slug
+                Slug = c.Slug,
+                NumberOfNewsItems = _newsRepository.GetNumberOfNewsByCategoryId(Id)
             });
+        }
+
+        public IEnumerable<CategoryDto> GetCategoriesByNewsId(int newsId)
+        {
+            var categoryIds = DataProvider.newsItemCategories.Where(x => x.NewsItemId == newsId).ToList();
+            var categories = new List<CategoryDto>();
+
+            foreach(var item in categoryIds)
+            {
+                categories.Add(DataProvider.Authors.Where(x => x.Id == item.CategoryId).Select(n => new CategoryDto{
+                    Id = n.Id,
+                    Name = n.Name
+                }).FirstOrDefault());
+            }
+            
+            return categories;
         }
     }
 }

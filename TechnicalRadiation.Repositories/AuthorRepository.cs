@@ -16,20 +16,30 @@ namespace TechnicalRadiation.Repositories
                 Name = c.Name
             });   
         }
-        public IEnumerable<AuthorDto> GetAuthorsById(int Id)
+        public IEnumerable<AuthorDetailsDto> GetAuthorsById(int Id)
         {
-            return DataProvider.Authors.Where(c => c.Id == Id).Select(c => new AuthorDto
+            return DataProvider.Authors.Where(c => c.Id == Id).Select(c => new AuthorDetailsDto
             {
                 Id = c.Id,
-                Name = c.Name
+                Name = c.Name,
+                ProfileImgSource = c.ProfileImgSource,
+                Bio = c.Bio
             });
         }
-        public IEnumerable<NewsItemDto> GetNewsByAuthorId(int Id)
+        public IEnumerable<AuthorDto> GetAuthorsByNewsId(int newsId)
         {
-            return DataProvider.newsAuthors.Where(c => c.AuthorId == Id).Select(c => new NewsItemDto
+            var authorIds = DataProvider.newsAuthors.Where(x => x.NewsItemId == newsId).ToList();
+            var authors = new List<AuthorDto>();
+
+            foreach(var item in authorIds)
             {
-                Id = c.AuthorId
-            });
+                authors.Add(DataProvider.Authors.Where(x => x.Id == item.AuthorId).Select(n => new AuthorDto{
+                    Id = n.Id,
+                    Name = n.Name
+                }).FirstOrDefault());
+            }
+            
+            return authors;
         }
     }
 }

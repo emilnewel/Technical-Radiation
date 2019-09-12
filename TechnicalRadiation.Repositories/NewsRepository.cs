@@ -47,6 +47,11 @@ namespace TechnicalRadiation.Repositories
             
             return newsitems;
         }
+
+        public int GetNumberOfNewsByCategoryId(int categoryId)
+        {
+            return DataProvider.newsItemCategories.Where(x => x.CategoryId == categoryId).Count();
+        }
     }
 
 }
