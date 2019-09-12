@@ -9,7 +9,7 @@ namespace TechnicalRadiation.Models.HyperMedia
         public Envelope(int pageNumber, int pageSize, IEnumerable<T> items)
         {
             Items = items.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-            MaxPages = (int) Math.Ceiling((decimal) items.Count() / pageSize);
+            MaxPages = (int)Math.Ceiling((decimal)items.Count() / pageSize);
             PageNumber = pageNumber;
             PageSize = pageSize;
         }

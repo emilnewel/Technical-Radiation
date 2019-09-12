@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using TechnicalRadiation.Models.Dtos;
+using TechnicalRadiation.Models.Exceptions;
 using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Services;
 
@@ -10,11 +13,11 @@ namespace TechnicalRadiation.WebApi.Controllers
     {
         private AuthorService _authorService = new AuthorService();
         private NewsService _newsItemService = new NewsService();
-        
+
         private AuthenticationServices _authService = new AuthenticationServices();
-        
+
         //GET http://localhost:5000/api/authors
-        [Route("")]
+        [Route("", Name = "GetAuthors")]
         [HttpGet]
         public IActionResult GetAuthors()
         {
@@ -22,11 +25,22 @@ namespace TechnicalRadiation.WebApi.Controllers
         }
 
         //GET http://localhost:5000/api/authors/{authorId}
-        [Route("{authorId:int}", Name = "GetAuthorsById")]
+        [Route("{authorId:int}")]
         [HttpGet]
         public IActionResult GetAuthorsById(int authorId)
         {
-            return Ok(_authorService.GetAuthorsById(authorId));
+            IEnumerable<AuthorDetailsDto> authors;
+            try
+            {
+                authors = _authorService.GetAuthorsById(authorId);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+
+
+            return Ok(authors);
         }
 
         //GET http://localhost:5000/api/authors/{authorId}/newsItem
@@ -34,7 +48,17 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpGet]
         public IActionResult GetNewsByAuthorId(int authorId)
         {
-            return Ok(_authorService.GetNewsByAuthorId(authorId));
+            IEnumerable<NewsItemDto> newsItems;
+            try
+            {
+                newsItems = _authorService.GetNewsByAuthorId(authorId);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            return Ok(newsItems);
         }
 
         //POST http://localhost:5000/api/authors
@@ -42,37 +66,58 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPost]
         public IActionResult InsertAuthor([FromBody] AuthorInputModel newAuthor)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            if(!ModelState.IsValid) return BadRequest();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!ModelState.IsValid) return BadRequest("Model is not properly formatted.");
 
             int newId = _authorService.InsertAuthor(newAuthor);
-            return CreatedAtRoute("GetAuthorsById", new { id = newId }, null);
+            return CreatedAtRoute("GetAuthors", new { id = newId }, null);
         }
 
         //PUT http://localhost:5000/api/authors/{AuthorId}
         [Route("{id:int}")]
         [HttpPut]
-        public IActionResult UpdateAuthor([FromBody] AuthorInputModel updatedAuthor)
+        public IActionResult UpdateAuthor([FromBody] AuthorInputModel updatedAuthor, [FromBody] int id)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!ModelState.IsValid) return BadRequest("Model is not properly formatted.");
+
+            try
+            {
+                _authorService.UpdateAuthor(updatedAuthor, id);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+            return NoContent();
         }
-        
+
         //DELETE http://localhost:5000/api/authors/{AuthorId}
         [Route("{id:int}")]
         [HttpDelete]
-        public IActionResult DeleteAuthor([FromBody] AuthorInputModel deletedAuthor)
+        public IActionResult DeleteAuthor([FromBody] int id)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+
+            try
+            {
+                _authorService.DeleteAuthor(id);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
         }
 
-        //PUT (/api/authors/{authorId}/newsItems/{newsItemId}
+        //PUT http://localhost:5000/api/authors/{authorId}/newsItems/{newsItemId}
         [HttpPut]
         [Route("{id:int}/newsItems/{newItemId:int}")]
         public IActionResult LinkAuthor([FromBody] AuthorInputModel linkAuthor)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
     }

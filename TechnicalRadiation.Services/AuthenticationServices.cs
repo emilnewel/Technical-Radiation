@@ -4,8 +4,9 @@ namespace TechnicalRadiation.Services
     {
         private string AuthToken = "RosaLeyniToken";
 
-        public bool Validate(string token){
-            if(token == AuthToken) return true;
+        public bool Validate(string token)
+        {
+            if (token == AuthToken) return true;
             return false;
         }
     }

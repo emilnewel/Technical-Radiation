@@ -1,4 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using TechnicalRadiation.Models.Dtos;
+using TechnicalRadiation.Models.Exceptions;
 using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Services;
 
@@ -10,7 +14,7 @@ namespace TechnicalRadiation.WebApi.Controllers
     {
         private CategoryService _categoryService = new CategoryService();
         private AuthenticationServices _authService = new AuthenticationServices();
-        
+
         //GET http://localhost:5000/api/categories
         [Route("", Name = "GetCategories")]
         [HttpGet]
@@ -24,7 +28,16 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpGet]
         public IActionResult GetCategoriesById(int categoryId)
         {
-            return Ok(_categoryService.GetCategoriesById(categoryId));
+            IEnumerable<CategoryDetailDto> categories;
+            try
+            {
+                categories = _categoryService.GetCategoriesById(categoryId);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            return Ok(categories);
         }
 
         //POST http://localhost:5000/api/categories/
@@ -32,34 +45,48 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPost]
         public IActionResult NewCategory([FromBody] CategoryInputModel newCategory)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
-            
-            var newId = _categoryService.InsertCategory(newCategory);
 
+            var newId = _categoryService.InsertCategory(newCategory);
             return CreatedAtRoute("GetCategories", new { Id = newId }, null);
         }
 
         //PUT http://localhost:5000/api/categories/{categoryId}
         [Route("{categoryId:int}")]
         [HttpPut]
-        public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedNewsItem)
+        public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedCategory, [FromBody] int id)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
-            
-            //var newId = _categoryService.InsertNewsItem(updatedNewsItem);
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!ModelState.IsValid) return BadRequest("Model is not properly formatted.");
 
-            return Ok();
+            try
+            {
+                _categoryService.UpdateCategory(updatedCategory, id);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
         }
-        
+
         //DELETE http://localhost:5000/api/categories/{categoryId}
         [Route("{categoryId:int}")]
         [HttpDelete]
-        public IActionResult DeleteCategory([FromBody] CategoryInputModel deletedNewsItem)
+        public IActionResult DeleteCategory([FromBody] int id)
         {
-            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+
+            try
+            {
+                _categoryService.DeleteCategory(id);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
         }
     }
 }

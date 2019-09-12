@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Models.Entities;
+using TechnicalRadiation.Models.Exceptions;
 using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories.Data;
 
@@ -16,7 +18,7 @@ namespace TechnicalRadiation.Repositories
             {
                 Id = c.Id,
                 Name = c.Name
-            });   
+            });
         }
         public IEnumerable<AuthorDetailsDto> GetAuthorsById(int Id)
         {
@@ -33,21 +35,23 @@ namespace TechnicalRadiation.Repositories
             var authorIds = DataProvider.newsAuthors.Where(x => x.NewsItemId == newsId).ToList();
             var authors = new List<AuthorDto>();
 
-            foreach(var item in authorIds)
+            foreach (var item in authorIds)
             {
-                authors.Add(DataProvider.Authors.Where(x => x.Id == item.AuthorId).Select(n => new AuthorDto{
+                authors.Add(DataProvider.Authors.Where(x => x.Id == item.AuthorId).Select(n => new AuthorDto
+                {
                     Id = n.Id,
                     Name = n.Name
                 }).FirstOrDefault());
             }
-            
+
             return authors;
         }
 
         public int InsertAuthor(AuthorInputModel newAuthor)
         {
             var nextId = DataProvider.Authors.OrderByDescending(a => a.Id).FirstOrDefault().Id + 1;
-            var entity = new Author(){
+            var entity = new Author()
+            {
                 Id = nextId,
                 Name = newAuthor.Name,
                 ProfileImgSource = newAuthor.ProfileImgSource,
@@ -56,6 +60,26 @@ namespace TechnicalRadiation.Repositories
 
             DataProvider.Authors.Add(entity);
             return nextId;
+        }
+
+        public void UpdateAuthor(AuthorInputModel updatedAuthor, int id)
+        {
+            var entity = DataProvider.Authors.FirstOrDefault(a => a.Id == id);
+
+            if (!string.IsNullOrEmpty(updatedAuthor.Name)) entity.Name = updatedAuthor.Name;
+            if (!string.IsNullOrEmpty(updatedAuthor.Bio)) entity.Bio = updatedAuthor.Bio;
+            if (!string.IsNullOrEmpty(updatedAuthor.ProfileImgSource)) entity.ProfileImgSource = updatedAuthor.ProfileImgSource;
+            entity.ModifiedBy = "admin";
+            entity.ModifiedDate = DateTime.Now;
+
+        }
+
+        public void DeleteAuthor(int id)
+        {
+            var entity = DataProvider.Authors.FirstOrDefault(a => a.Id == id);
+            if (entity == null) { throw new ResourceNotFoundException($"Author with id {id} was not found."); }
+
+            DataProvider.Authors.Remove(entity);
         }
     }
 }

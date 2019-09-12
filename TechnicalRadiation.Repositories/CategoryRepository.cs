@@ -5,6 +5,7 @@ using TechnicalRadiation.Models.Entities;
 using TechnicalRadiation.Models.InputModels;
 using System.Linq;
 using System;
+using TechnicalRadiation.Models.Exceptions;
 
 namespace TechnicalRadiation.Repositories
 {
@@ -31,34 +32,52 @@ namespace TechnicalRadiation.Repositories
                 NumberOfNewsItems = _newsRepository.GetNumberOfNewsByCategoryId(Id)
             });
         }
-        public int InsertCategory(CategoryInputModel newCategory){
+        public int InsertCategory(CategoryInputModel newCategory)
+        {
             var nextId = DataProvider.Categories.OrderByDescending(n => n.Id).FirstOrDefault().Id + 1;
             var newThing = new Category
             {
                 Id = nextId,
                 Name = newCategory.Name,
-                Slug = newCategory.Name.ToLower().Replace(' ','-'),
+                Slug = newCategory.Name.ToLower().Replace(' ', '-'),
                 ModifiedBy = "admin",
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
             };
             DataProvider.Categories.Add(newThing);
-            
+
             return nextId;
+        }
+
+        public void UpdateCategory(CategoryInputModel updatedCategory, int id)
+        {
+            var entity = DataProvider.Categories.FirstOrDefault(c => c.Id == id);
+            if (entity == null) { throw new ResourceNotFoundException($"Category with id {id} was not found."); }
+            if (!string.IsNullOrEmpty(updatedCategory.Name)) entity.Name = updatedCategory.Name;
+            entity.ModifiedBy = "admin";
+            entity.ModifiedDate = DateTime.Now;
+        }
+
+        public void DeleteCategories(int id)
+        {
+            var entity = DataProvider.Categories.FirstOrDefault(c => c.Id == id);
+            if (entity == null) { throw new ResourceNotFoundException($"Category with id {id} was not found."); }
+            DataProvider.Categories.Remove(entity);
         }
         public IEnumerable<CategoryDto> GetCategoriesByNewsId(int newsId)
         {
             var categoryIds = DataProvider.newsItemCategories.Where(x => x.NewsItemId == newsId).ToList();
             var categories = new List<CategoryDto>();
 
-            foreach(var item in categoryIds)
+            foreach (var item in categoryIds)
             {
-                categories.Add(DataProvider.Authors.Where(x => x.Id == item.CategoryId).Select(n => new CategoryDto{
+                categories.Add(DataProvider.Authors.Where(x => x.Id == item.CategoryId).Select(n => new CategoryDto
+                {
                     Id = n.Id,
                     Name = n.Name
                 }).FirstOrDefault());
             }
-            
+
             return categories;
         }
     }

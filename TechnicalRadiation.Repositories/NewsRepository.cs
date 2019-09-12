@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Models.Entities;
+using TechnicalRadiation.Models.Exceptions;
 using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories.Data;
 
@@ -36,16 +37,17 @@ namespace TechnicalRadiation.Repositories
             var newsItemIds = DataProvider.newsAuthors.Where(x => x.AuthorId == authorId).ToList();
             var newsitems = new List<NewsItemDto>();
 
-            foreach(var item in newsItemIds)
+            foreach (var item in newsItemIds)
             {
-                newsitems.Add(DataProvider.NewsItems.Where(x => x.Id == item.NewsItemId).Select(n => new NewsItemDto{
+                newsitems.Add(DataProvider.NewsItems.Where(x => x.Id == item.NewsItemId).Select(n => new NewsItemDto
+                {
                     Id = n.Id,
                     Title = n.Title,
                     ImgSource = n.ImgSource,
                     ShortDescription = n.ShortDescription
                 }).FirstOrDefault());
             }
-            
+
             return newsitems;
         }
 
@@ -67,20 +69,21 @@ namespace TechnicalRadiation.Repositories
             DataProvider.NewsItems.Add(newThing);
             return nextId;
         }
-        public void UpdateNewsItem(NewsItemInputModel updateItem,int id)
+        public void UpdateNewsItem(NewsItemInputModel updateItem, int id)
         {
             var entity = DataProvider.NewsItems.FirstOrDefault(r => r.Id == id);
-
-            if(!string.IsNullOrEmpty(updateItem.Title))entity.Title = updateItem.Title;
-            if(!string.IsNullOrEmpty(updateItem.ImgSource))entity.ImgSource = updateItem.ImgSource;
-            if(!string.IsNullOrEmpty(updateItem.ShortDescription))entity.ShortDescription = updateItem.ShortDescription;
-            if(!string.IsNullOrEmpty(updateItem.LongDescription))entity.LongDescription = updateItem.LongDescription;
+            if (entity == null) { throw new ResourceNotFoundException($"NewsItem with id {id} was not found."); }
+            if (!string.IsNullOrEmpty(updateItem.Title)) entity.Title = updateItem.Title;
+            if (!string.IsNullOrEmpty(updateItem.ImgSource)) entity.ImgSource = updateItem.ImgSource;
+            if (!string.IsNullOrEmpty(updateItem.ShortDescription)) entity.ShortDescription = updateItem.ShortDescription;
+            if (!string.IsNullOrEmpty(updateItem.LongDescription)) entity.LongDescription = updateItem.LongDescription;
             entity.ModifiedBy = "admin";
             entity.ModifiedDate = DateTime.Now;
         }
         public void DeleteNewsById(int id)
         {
             var entity = DataProvider.NewsItems.FirstOrDefault(r => r.Id == id);
+            if (entity == null) { throw new ResourceNotFoundException($"NewsItem with id {id} was not found."); }
             DataProvider.NewsItems.Remove(entity);
         }
         public int GetNumberOfNewsByCategoryId(int categoryId)

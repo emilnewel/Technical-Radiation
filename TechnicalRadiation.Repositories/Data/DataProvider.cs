@@ -10,7 +10,7 @@ namespace TechnicalRadiation.Repositories.Data
         private static readonly string _adminName = "Admin";
         public static List<Author> Authors = new List<Author>
         {
-            new Author 
+            new Author
             {
                 Id = 1,
                 Name = "Emil Newel",
@@ -18,10 +18,10 @@ namespace TechnicalRadiation.Repositories.Data
                 Bio = "polskur kall",
                 ModifiedBy = _adminName,
                 CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now 
+                ModifiedDate = DateTime.Now
 
             },
-            new Author 
+            new Author
             {
                 Id = 2,
                 Name = "Maggi pulsa",
@@ -29,14 +29,14 @@ namespace TechnicalRadiation.Repositories.Data
                 Bio = "lítill kall",
                 ModifiedBy = _adminName,
                 CreatedDate = DateTime.Now,
-                ModifiedDate = DateTime.Now 
+                ModifiedDate = DateTime.Now
 
             }
         };
 
         public static List<Category> Categories = new List<Category>
         {
-            new Category 
+            new Category
             {
                 Id = 1,
                 Name = "Action news",
@@ -46,7 +46,7 @@ namespace TechnicalRadiation.Repositories.Data
                 CreatedDate = DateTime.Now
 
             },
-            new Category 
+            new Category
             {
                 Id = 2,
                 Name = "No Action news",
@@ -59,7 +59,7 @@ namespace TechnicalRadiation.Repositories.Data
         };
         public static List<NewsItem> NewsItems = new List<NewsItem>
         {
-            new NewsItem 
+            new NewsItem
             {
                 Id = 1,
                 Title = "sprengja búmbúm",
@@ -72,7 +72,7 @@ namespace TechnicalRadiation.Repositories.Data
                 CreatedDate = DateTime.Now
 
             },
-            new NewsItem 
+            new NewsItem
             {
                 Id = 2,
                 Title = "´Instagramkona á hús",
@@ -88,15 +88,15 @@ namespace TechnicalRadiation.Repositories.Data
         };
         public static List<NewsItemAuthors> newsAuthors = new List<NewsItemAuthors>
         {
-            new NewsItemAuthors 
+            new NewsItemAuthors
             {
-                
+
                 AuthorId = 1,
                 NewsItemId = 1
             },
-            new NewsItemAuthors 
+            new NewsItemAuthors
             {
-                
+
                 AuthorId = 2,
                 NewsItemId = 2
             }
