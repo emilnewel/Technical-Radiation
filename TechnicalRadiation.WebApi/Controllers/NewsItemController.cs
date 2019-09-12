@@ -14,6 +14,8 @@ namespace TechnicalRadiation.WebApi.Controllers
     public class NewsItemController : ControllerBase
     {
         private NewsService _newsService = new NewsService();
+        
+        private AuthenticationServices _authService = new AuthenticationServices();
 
 
         //GET http://localhost:5000/api/
@@ -43,6 +45,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPost]
         public IActionResult NewNewsItem([FromBody] NewsItemInputModel newNewsItem)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
 
@@ -51,6 +54,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPut]
         public IActionResult UpdateNewsItem([FromBody] NewsItemInputModel updatedNewsItem)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
         
@@ -59,6 +63,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpDelete]
         public IActionResult DeleteNewsItem([FromBody] NewsItemInputModel deletedNewsItem)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
     }

@@ -9,6 +9,7 @@ namespace TechnicalRadiation.WebApi.Controllers
     public class CategoryController : ControllerBase
     {
         private CategoryService _categoryService = new CategoryService();
+        private AuthenticationServices _authService = new AuthenticationServices();
         
         //GET http://localhost:5000/api/categories
         [Route("")]
@@ -31,6 +32,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPost]
         public IActionResult NewCategory([FromBody] CategoryInputModel newCategory)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
 
@@ -39,6 +41,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPut]
         public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedNewsItem)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
         
@@ -47,6 +50,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpDelete]
         public IActionResult DeleteCategory([FromBody] CategoryInputModel deletedNewsItem)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
     }

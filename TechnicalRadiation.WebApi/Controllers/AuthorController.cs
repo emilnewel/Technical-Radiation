@@ -11,6 +11,8 @@ namespace TechnicalRadiation.WebApi.Controllers
         private AuthorService _authorService = new AuthorService();
         private NewsService _newsItemService = new NewsService();
         
+        private AuthenticationServices _authService = new AuthenticationServices();
+        
         //GET http://localhost:5000/api/authors
         [Route("")]
         [HttpGet]
@@ -40,6 +42,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPost]
         public IActionResult NewAuthor([FromBody] AuthorInputModel newAuthor)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
 
@@ -48,6 +51,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpPut]
         public IActionResult UpdateAuthor([FromBody] AuthorInputModel updatedAuthor)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
         
@@ -56,10 +60,17 @@ namespace TechnicalRadiation.WebApi.Controllers
         [HttpDelete]
         public IActionResult DeleteAuthor([FromBody] AuthorInputModel deletedAuthor)
         {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             return Ok();
         }
 
-        //POST http://localhost:5000/api/authors/{authorId}/newsItems/{newsItemId}
-        //Mátt gera þetta hehe
+        //PUT (/api/authors/{authorId}/newsItems/{newsItemId}
+        [HttpPut]
+        [Route("{id:int}/newsItems/{newItemId:int}")]
+        public IActionResult LinkAuthor([FromBody] AuthorInputModel linkAuthor)
+        {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            return Ok();
+        }
     }
 }
