@@ -17,24 +17,36 @@ namespace TechnicalRadiation.Repositories
             ShortDescription = n.ShortDescription
         });
 
-        public IEnumerable<NewsItemDto> GetNewsById(int Id)
+        public IEnumerable<NewsItemDetailDto> GetNewsById(int Id)
         {
-            return DataProvider.NewsItems.Where(n => n.Id == Id).Select(n => new NewsItemDto
+            return DataProvider.NewsItems.Where(n => n.Id == Id).Select(n => new NewsItemDetailDto
             {
                 Id = n.Id,
                 Title = n.Title,
                 ImgSource = n.ImgSource,
-                ShortDescription = n.ShortDescription
+                ShortDescription = n.ShortDescription,
+                LongDescription = n.LongDescription,
+                PublishDate = n.PublishDate
             });
         }
 
-        // public IEnumerable<NewsItemDto> GetNewsByAuthorId(int authorId)
-        // {
-        //    Mátt endilega bomba í þettaa fall :p
-        //     
-        // }
+        public IEnumerable<NewsItemDto> GetNewsByAuthorId(int authorId)
+        {
+            var newsItemIds = DataProvider.newsAuthors.Where(x => x.AuthorId == authorId).ToList();
+            var newsitems = new List<NewsItemDto>();
 
-
+            foreach(var item in newsItemIds)
+            {
+                newsitems.Add(DataProvider.NewsItems.Where(x => x.Id == item.NewsItemId).Select(n => new NewsItemDto{
+                    Id = n.Id,
+                    Title = n.Title,
+                    ImgSource = n.ImgSource,
+                    ShortDescription = n.ShortDescription
+                }).FirstOrDefault());
+            }
+            
+            return newsitems;
+        }
     }
 
 }
