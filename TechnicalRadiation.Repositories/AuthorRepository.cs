@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
+using TechnicalRadiation.Models.Entities;
+using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories.Data;
 
 
@@ -40,6 +42,20 @@ namespace TechnicalRadiation.Repositories
             }
             
             return authors;
+        }
+
+        public int InsertAuthor(AuthorInputModel newAuthor)
+        {
+            var nextId = DataProvider.Authors.OrderByDescending(a => a.Id).FirstOrDefault().Id + 1;
+            var entity = new Author(){
+                Id = nextId,
+                Name = newAuthor.Name,
+                ProfileImgSource = newAuthor.ProfileImgSource,
+                Bio = newAuthor.Bio
+            };
+
+            DataProvider.Authors.Add(entity);
+            return nextId;
         }
     }
 }
