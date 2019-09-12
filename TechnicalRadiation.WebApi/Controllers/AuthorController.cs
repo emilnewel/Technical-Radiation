@@ -22,7 +22,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         }
 
         //GET http://localhost:5000/api/authors/{authorId}
-        [Route("{authorId:int}")]
+        [Route("{authorId:int}", Name = "GetAuthorsById")]
         [HttpGet]
         public IActionResult GetAuthorsById(int authorId)
         {
@@ -40,10 +40,13 @@ namespace TechnicalRadiation.WebApi.Controllers
         //POST http://localhost:5000/api/authors
         [Route("")]
         [HttpPost]
-        public IActionResult NewAuthor([FromBody] AuthorInputModel newAuthor)
+        public IActionResult InsertAuthor([FromBody] AuthorInputModel newAuthor)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if(!ModelState.IsValid) return BadRequest();
+
+            int newId = _authorService.InsertAuthor(newAuthor);
+            return CreatedAtRoute("GetAuthorsById", new { id = newId }, null);
         }
 
         //PUT http://localhost:5000/api/authors/{AuthorId}
