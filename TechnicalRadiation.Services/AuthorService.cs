@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Models.HyperMedia;
+using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories;
 
 
@@ -51,5 +52,10 @@ namespace TechnicalRadiation.Services
 
             return news;
         } 
+
+        public int InsertAuthor(AuthorInputModel newAuthor)
+        {
+            return _authorRepository.InsertAuthor(newAuthor);
+        }
    }
 }
