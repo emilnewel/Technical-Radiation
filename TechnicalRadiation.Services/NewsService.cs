@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Models.HyperMedia;
+using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories;
 
 namespace TechnicalRadiation.Services
@@ -34,6 +35,16 @@ namespace TechnicalRadiation.Services
                 // categories ni.Links.AddReferenceList();
             });
             return newsItem;
-        } 
+        }
+        public int InsertNewsItem(NewsItemInputModel newNewsItem){
+            return _newsRepository.InsertNewsItem(newNewsItem);
+        }
+        public void UpdateNewsItem(NewsItemInputModel newNewsItem, int id){
+            _newsRepository.UpdateNewsItem(newNewsItem, id);
+        }
+        public void DeleteNewsById(int id){
+            _newsRepository.DeleteNewsById(id);
+        }
+         
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TechnicalRadiation.Models.Dtos;
 using TechnicalRadiation.Models.HyperMedia;
+using TechnicalRadiation.Models.InputModels;
 using TechnicalRadiation.Repositories;
 
 
@@ -25,6 +26,9 @@ namespace TechnicalRadiation.Services
             
         }
         public IEnumerable<CategoryDto> GetCategoriesById(int Id) => _categoryRepository.GetCategoriesById(Id);
+        public int InsertCategory(CategoryInputModel newCategory){
+            return _categoryRepository.InsertCategory(newCategory);
+        }
     }
 }
 

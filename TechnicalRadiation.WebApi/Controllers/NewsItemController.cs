@@ -19,7 +19,7 @@ namespace TechnicalRadiation.WebApi.Controllers
 
 
         //GET http://localhost:5000/api/
-        [Route("")]
+        [Route("",Name = "GetAllNews")]
         [HttpGet]
         public IActionResult GetAllNews([FromQuery] int pageSize = 25, [FromQuery] int pageNumber = 1)
         {
@@ -33,7 +33,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         }       
 
         //GET http://localhost:5000/api/{newsItemId}
-        [Route("{id:int}")]
+        [Route("{id:int}", Name = "GetNewsById")]
         [HttpGet]
         public IActionResult GetNewsById(int id)
         {
@@ -43,28 +43,37 @@ namespace TechnicalRadiation.WebApi.Controllers
         //POST http://localhost:5000/api/
         [Route("")]
         [HttpPost]
-        public IActionResult NewNewsItem([FromBody] NewsItemInputModel newNewsItem)
+        public IActionResult InsertNewsItem([FromBody] NewsItemInputModel newNewsItem)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
+            
+            var newId = _newsService.InsertNewsItem(newNewsItem);
+
+            return CreatedAtRoute("GetNewsById", new { Id = newId }, null);
         }
 
         //PUT http://localhost:5000/api/{newsItemId}
         [Route("{id:int}")]
         [HttpPut]
-        public IActionResult UpdateNewsItem([FromBody] NewsItemInputModel updatedNewsItem)
+        public IActionResult UpdateNewsItem([FromBody] NewsItemInputModel updatedNewsItem, int id)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
+            
+            _newsService.UpdateNewsItem(updatedNewsItem, id);
+            return NoContent();
         }
         
         //DELETE http://localhost:5000/api/{newsItemId}
         [Route("{id:int}")]
         [HttpDelete]
-        public IActionResult DeleteNewsItem([FromBody] NewsItemInputModel deletedNewsItem)
+        public IActionResult DeleteNewsItem([FromBody] NewsItemInputModel deletedNewsItem, int id)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            _newsService.DeleteNewsById(id);
+            return NoContent();
+            
         }
     }
 }

@@ -12,7 +12,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         private AuthenticationServices _authService = new AuthenticationServices();
         
         //GET http://localhost:5000/api/categories
-        [Route("")]
+        [Route("", Name = "GetCategories")]
         [HttpGet]
         public IActionResult GetCategories()
         {
@@ -33,7 +33,11 @@ namespace TechnicalRadiation.WebApi.Controllers
         public IActionResult NewCategory([FromBody] CategoryInputModel newCategory)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
-            return Ok();
+            if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
+            
+            var newId = _categoryService.InsertCategory(newCategory);
+
+            return CreatedAtRoute("GetCategories", new { Id = newId }, null);
         }
 
         //PUT http://localhost:5000/api/categories/{categoryId}
@@ -42,6 +46,10 @@ namespace TechnicalRadiation.WebApi.Controllers
         public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedNewsItem)
         {
             if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
+            
+            //var newId = _categoryService.InsertNewsItem(updatedNewsItem);
+
             return Ok();
         }
         
