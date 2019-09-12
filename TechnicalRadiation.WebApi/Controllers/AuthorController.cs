@@ -76,7 +76,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //PUT http://localhost:5000/api/authors/{AuthorId}
         [Route("{id:int}")]
         [HttpPut]
-        public IActionResult UpdateAuthor([FromBody] AuthorInputModel updatedAuthor, [FromBody] int id)
+        public IActionResult UpdateAuthor([FromBody] AuthorInputModel updatedAuthor, int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             if (!ModelState.IsValid) return BadRequest("Model is not properly formatted.");
@@ -96,7 +96,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //DELETE http://localhost:5000/api/authors/{AuthorId}
         [Route("{id:int}")]
         [HttpDelete]
-        public IActionResult DeleteAuthor([FromBody] int id)
+        public IActionResult DeleteAuthor(int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
 

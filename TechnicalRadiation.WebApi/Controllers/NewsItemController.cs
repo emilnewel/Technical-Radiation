@@ -30,7 +30,7 @@ namespace TechnicalRadiation.WebApi.Controllers
             envelope.Items = allNewsItems.ToList().Skip((pageNumber - 1) * pageSize).Take(pageSize);
             envelope.MaxPages = (int)Math.Ceiling(allNewsItems.Count() / (decimal)pageSize);
 
-            return Ok(envelope);
+            return Ok(envelope.Items);
         }
 
         //GET http://localhost:5000/api/{newsItemId}
@@ -57,7 +57,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //PUT http://localhost:5000/api/{newsItemId}
         [Route("{id:int}")]
         [HttpPut]
-        public IActionResult UpdateNewsItem([FromBody] NewsItemInputModel updatedNewsItem, [FromBody] int id)
+        public IActionResult UpdateNewsItem([FromBody] NewsItemInputModel updatedNewsItem, int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             if (!ModelState.IsValid) { return BadRequest("Model is not properly formatted."); }
@@ -69,7 +69,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //DELETE http://localhost:5000/api/{newsItemId}
         [Route("{id:int}")]
         [HttpDelete]
-        public IActionResult DeleteNewsItem([FromBody] int id)
+        public IActionResult DeleteNewsItem(int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
 

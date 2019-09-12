@@ -55,7 +55,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //PUT http://localhost:5000/api/categories/{categoryId}
         [Route("{categoryId:int}")]
         [HttpPut]
-        public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedCategory, [FromBody] int id)
+        public IActionResult UpdateCategory([FromBody] CategoryInputModel updatedCategory, int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
             if (!ModelState.IsValid) return BadRequest("Model is not properly formatted.");
@@ -74,7 +74,7 @@ namespace TechnicalRadiation.WebApi.Controllers
         //DELETE http://localhost:5000/api/categories/{categoryId}
         [Route("{categoryId:int}")]
         [HttpDelete]
-        public IActionResult DeleteCategory([FromBody] int id)
+        public IActionResult DeleteCategory(int id)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
 

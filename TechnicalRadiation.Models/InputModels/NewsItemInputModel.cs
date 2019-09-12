@@ -16,6 +16,6 @@ namespace TechnicalRadiation.Models.InputModels
         [MaxLength(255)]
         public string LongDescription { get; set; }
         [Required]
-        public DateTime PublishDate { get; set; }
+        public string PublishDate { get; set; }
     }
 }

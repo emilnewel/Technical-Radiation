@@ -61,7 +61,7 @@ namespace TechnicalRadiation.Repositories
                 ImgSource = newsItem.ImgSource,
                 ShortDescription = newsItem.ShortDescription,
                 LongDescription = newsItem.LongDescription,
-                PublishDate = DateTime.Now,
+                PublishDate = DateTime.Parse(newsItem.PublishDate),
                 ModifiedBy = "admin",
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now
