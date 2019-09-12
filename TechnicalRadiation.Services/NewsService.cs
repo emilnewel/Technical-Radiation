@@ -10,6 +10,8 @@ namespace TechnicalRadiation.Services
     public class NewsService
     {
         private NewsRepository _newsRepository = new NewsRepository();
+        private AuthorRepository _authorRepository = new AuthorRepository();
+        private CategoryRepository _categoryRepository = new CategoryRepository();
 
         public IEnumerable<NewsItemDto> GetAllNews()
         {
@@ -18,8 +20,8 @@ namespace TechnicalRadiation.Services
                 ni.Links.AddReference("self", $"/api/{ni.Id}");
                 ni.Links.AddReference("edit", $"/api/{ni.Id}");
                 ni.Links.AddReference("delete", $"/api/{ni.Id}");
-                // authors ni.Links.AddReferenceList();
-                // categories ni.Links.AddReferenceList();
+                ni.Links.AddListReference("authors", _authorRepository.GetAuthorsByNewsId(ni.Id).Select(a => new { href = $"/api/authors/{a.Id}"}));
+                ni.Links.AddListReference("categories", _categoryRepository.GetCategoriesByNewsId(ni.Id).Select(c => new { href = $"/api/categories/{c.Id}"}));
                 
             });
 
@@ -31,8 +33,8 @@ namespace TechnicalRadiation.Services
                 ni.Links.AddReference("self", $"/api/{ni.Id}");
                 ni.Links.AddReference("edit", $"/api/{ni.Id}");
                 ni.Links.AddReference("delete", $"/api/{ni.Id}");
-                // authors ni.Links.AddReferenceList();
-                // categories ni.Links.AddReferenceList();
+                ni.Links.AddListReference("authors", _authorRepository.GetAuthorsByNewsId(ni.Id).Select(a => new { href = $"/api/authors/{a.Id}"}));
+                ni.Links.AddListReference("categories", _categoryRepository.GetCategoriesByNewsId(ni.Id).Select(c => new { href = $"/api/categories/{c.Id}"}));
             });
             return newsItem;
         }

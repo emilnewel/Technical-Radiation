@@ -83,6 +83,10 @@ namespace TechnicalRadiation.Repositories
             var entity = DataProvider.NewsItems.FirstOrDefault(r => r.Id == id);
             DataProvider.NewsItems.Remove(entity);
         }
+        public int GetNumberOfNewsByCategoryId(int categoryId)
+        {
+            return DataProvider.newsItemCategories.Where(x => x.CategoryId == categoryId).Count();
+        }
     }
 
 }

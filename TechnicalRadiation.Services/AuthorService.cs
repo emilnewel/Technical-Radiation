@@ -11,6 +11,7 @@ namespace TechnicalRadiation.Services
     {
         private AuthorRepository _authorRepository = new AuthorRepository();
         private NewsRepository _newsItemRepository = new NewsRepository();
+        private CategoryRepository _categoryRepository = new CategoryRepository();
         public IEnumerable<AuthorDto> GetAuthors(){
         var authors = _authorRepository.GetAuthors().ToList();
             authors.ForEach(a => {
@@ -18,12 +19,37 @@ namespace TechnicalRadiation.Services
                 a.Links.AddReference("edit", $"/api/authors/{a.Id}");
                 a.Links.AddReference("delete", $"/api/authors/{a.Id}");
                 a.Links.AddReference("newsItems", $"/api/authors/{a.Id}/newsItems");
-                a.Links.AddListReference("news", _newsItemRepository.GetNewsByAuthorId(a.Id).Select(n => new { href = $"/api/authors/{a.Id}/newsItems/{n.Id}"}));
+                a.Links.AddListReference("newsItemDetailed", _newsItemRepository.GetNewsByAuthorId(a.Id).Select(n => new { href = $"/api/{n.Id}"}));
             });
 
             return authors;
         }
-        public IEnumerable<AuthorDto> GetAuthorsById(int Id) => _authorRepository.GetAuthorsById(Id);
-        public IEnumerable<NewsItemDto> GetNewsByAuthorId(int Id) => _authorRepository.GetNewsByAuthorId(Id);
+        public IEnumerable<AuthorDetailsDto> GetAuthorsById(int Id)
+        {
+            var authors = _authorRepository.GetAuthorsById(Id).ToList();
+            authors.ForEach(a => {
+                a.Links.AddReference("self", $"/api/authors/{a.Id}");
+                a.Links.AddReference("edit", $"/api/authors/{a.Id}");
+                a.Links.AddReference("delete", $"/api/authors/{a.Id}");
+                a.Links.AddReference("newsItems", $"/api/authors/{a.Id}/newsItems");
+                a.Links.AddListReference("newsItemsDetailed", _newsItemRepository.GetNewsByAuthorId(a.Id).Select(n => new { href = $"/api/{n.Id}"}));
+            });
+
+            return authors;
+        
+        }
+        public IEnumerable<NewsItemDto> GetNewsByAuthorId(int Id)
+        {
+            var news = _newsItemRepository.GetNewsByAuthorId(Id).ToList();
+            news.ForEach(n => {
+                n.Links.AddReference("self", $"/api/{n.Id}");
+                n.Links.AddReference("edit", $"/api/{n.Id}");
+                n.Links.AddReference("delete", $"/api/{n.Id}");
+                n.Links.AddListReference("authors", _authorRepository.GetAuthorsByNewsId(n.Id).Select(a => new { href = $"/api/authors/{a.Id}"}));
+                n.Links.AddListReference("categories", _categoryRepository.GetCategoriesByNewsId(n.Id).Select(c => new { href = $"/api/categories/{c.Id}"}));
+            });
+
+            return news;
+        } 
    }
 }
