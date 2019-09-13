@@ -56,6 +56,9 @@ namespace TechnicalRadiation.Services
         {
             _categoryRepository.DeleteCategories(id);
         }
+        public void LinkCategory(int categoryId, int newsItemId){
+            _categoryRepository.LinkCategory(categoryId, newsItemId);
+        }
     }
 }
 

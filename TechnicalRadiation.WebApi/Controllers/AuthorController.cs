@@ -113,11 +113,21 @@ namespace TechnicalRadiation.WebApi.Controllers
         }
 
         //PUT http://localhost:5000/api/authors/{authorId}/newsItems/{newsItemId}
-        [HttpPut]
-        [Route("{id:int}/newsItems/{newItemId:int}")]
-        public IActionResult LinkAuthor([FromBody] AuthorInputModel linkAuthor)
+        [HttpPost]
+        [Route("{authorId:int}/newsItems/{newsItemId:int}")]
+        public IActionResult LinkAuthor(int authorId, int newsItemId)
         {
             if (!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            try
+            {
+                _authorService.LinkAuthor(authorId, newsItemId);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+            
             return Ok();
         }
     }

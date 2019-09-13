@@ -80,5 +80,15 @@ namespace TechnicalRadiation.Repositories
 
             return categories;
         }
+        public void LinkCategory(int categoryId, int newsItemId){
+            if(DataProvider.Categories.FirstOrDefault(n => n.Id == categoryId) == null)  {throw new ResourceNotFoundException($"Category with id {categoryId} was not found."); }        
+            if(DataProvider.NewsItems.FirstOrDefault(n => n.Id == newsItemId) == null) {throw new ResourceNotFoundException($"News item with id {newsItemId} was not found."); }
+            var newLink = new NewsItemCategories
+            {
+                CategoryId = categoryId,
+                NewsItemId = newsItemId
+            };
+            DataProvider.newsItemCategories.Add(newLink);
+        }
     }
 }

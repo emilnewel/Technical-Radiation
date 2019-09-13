@@ -75,5 +75,8 @@ namespace TechnicalRadiation.Services
         {
             _authorRepository.DeleteAuthor(id);
         }
+        public void LinkAuthor(int authorId, int newsItemId){
+            _authorRepository.LinkAuthor(authorId, newsItemId);
+        }
     }
 }

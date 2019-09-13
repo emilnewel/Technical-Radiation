@@ -88,5 +88,22 @@ namespace TechnicalRadiation.WebApi.Controllers
             }
             return NoContent();
         }
+        //(/api/categories/{categoryId}/newsItems/{newsItemId}
+        [Route("{categoryId:int}/newsItems/{newsItemId:int}")]
+        [HttpPost]
+        public IActionResult LinkCategory(int categoryId,int newsItemId)
+        {
+            if(!_authService.Validate(Request.Headers["Authorization"])) return Unauthorized();
+            try
+            {
+                _categoryService.LinkCategory(categoryId, newsItemId);
+            }
+            catch (ResourceNotFoundException ex)
+            {
+                
+                return BadRequest(ex.Message);
+            }
+            return Ok();
+        }
     }
 }

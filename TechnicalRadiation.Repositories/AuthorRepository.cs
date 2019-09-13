@@ -81,5 +81,16 @@ namespace TechnicalRadiation.Repositories
 
             DataProvider.Authors.Remove(entity);
         }
+        public void LinkAuthor(int authorId, int newsItemId){
+            
+            if(DataProvider.Authors.FirstOrDefault(a => a.Id == authorId) == null) {throw new ResourceNotFoundException($"Author with id {authorId} was not found."); }
+            if(DataProvider.NewsItems.FirstOrDefault(n => n.Id == newsItemId) == null) {throw new ResourceNotFoundException($"News item with id {newsItemId} was not found."); }
+            var newLink = new NewsItemAuthors 
+            {
+             AuthorId = authorId,
+             NewsItemId = newsItemId   
+            };
+            DataProvider.newsAuthors.Add(newLink);
+        }
     }
 }
